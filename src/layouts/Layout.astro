@@ -1,0 +1,76 @@
+---
+import Boarder from "../components/Border.astro";
+import Navigation from "../components/Navigation.astro";
+
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="flex h-full bg-zinc-50 dark:bg-black">
+    <div class="flex w-full">
+      <Boarder />
+      <div class="relative flex w-full flex-col">
+        <Navigation />
+        <main class="flex-auto"><slot /></main>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  @import "tailwindcss/base";
+  @import "tailwindcss/components";
+  @import "../styles/prism.css";
+  @import "tailwindcss/utilities";
+
+	
+</style>
+
+<script>
+  (function () {
+    try {
+      const docElement = document.documentElement;
+      const classList = docElement.classList;
+
+      // Remove existing theme classes
+      classList.remove("light", "dark");
+
+      // Get the theme from localStorage
+      const storedTheme = localStorage.getItem("theme");
+
+      // Determine the theme to apply
+      if (storedTheme === "system" || (!storedTheme && true)) {
+        const darkModeQuery = "(prefers-color-scheme: dark)";
+        const matchMedia = window.matchMedia(darkModeQuery);
+
+        if (matchMedia.media !== darkModeQuery || matchMedia.matches) {
+          docElement.style.colorScheme = "dark";
+          classList.add("dark");
+        } else {
+          docElement.style.colorScheme = "light";
+          classList.add("light");
+        }
+      } else if (storedTheme) {
+        classList.add(storedTheme || "");
+        if (storedTheme === "light" || storedTheme === "dark") {
+          docElement.style.colorScheme = storedTheme;
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  })();
+</script>
